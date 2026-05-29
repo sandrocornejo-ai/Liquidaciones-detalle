@@ -5,6 +5,7 @@ from io import BytesIO
 import calendar
 from procesador import procesar_liquidaciones
 from generador import generar_archivo_entrada
+from mantencion import render_mantencion
 
 st.set_page_config(
     page_title="Liquidaciones Detalle",
@@ -140,7 +141,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
-tab1, tab2 = st.tabs(["📄 Generar Archivo de Entrada", "⚙️ Procesar Liquidaciones"])
+tab1, tab2, tab3 = st.tabs(["📄 Generar Archivo de Entrada", "⚙️ Procesar Liquidaciones", "🗃️ Mantención de Tablas"])
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TAB 1 — GENERAR ARCHIVO DE ENTRADA
@@ -243,12 +244,15 @@ with tab2:
     with col7:
         st.markdown('<div class="step-label">Listado de empresas</div>', unsafe_allow_html=True)
         file_empresas2 = st.file_uploader("listado_empresas.xlsx", type=['xlsx'], key="empresas2")
+    with col8:
+        st.markdown('<div class="step-label">Lista de conceptos</div>', unsafe_allow_html=True)
+        file_conceptos2 = st.file_uploader("Lista_de_conceptos.xlsx", type=['xlsx'], key="conceptos2")
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("PROCESAR LIQUIDACIONES", key="btn_procesar"):
-        archivos = [file_entrada, file_params, file_afp2, file_salud2, file_mutuales2, file_cajas2, file_empresas2]
-        nombres = ["Archivo entrada", "Parámetros mensuales", "inst_afp", "inst_salud", "inst_mutuales", "inst_cajas", "Listado empresas"]
+        archivos = [file_entrada, file_params, file_afp2, file_salud2, file_mutuales2, file_cajas2, file_empresas2, file_conceptos2]
+        nombres = ["Archivo entrada", "Parámetros mensuales", "inst_afp", "inst_salud", "inst_mutuales", "inst_cajas", "Listado empresas", "Lista de conceptos"]
         faltantes = [n for f, n in zip(archivos, nombres) if f is None]
         if faltantes:
             st.markdown(f'<div class="error-box">⚠️ Faltan archivos: {", ".join(faltantes)}</div>', unsafe_allow_html=True)
@@ -257,7 +261,8 @@ with tab2:
                 try:
                     output, n_filas, n_trabajadores = procesar_liquidaciones(
                         file_entrada, file_params,
-                        file_afp2, file_salud2, file_mutuales2, file_cajas2, file_empresas2
+                        file_afp2, file_salud2, file_mutuales2, file_cajas2, file_empresas2,
+                        file_conceptos2
                     )
                     st.markdown(f'''
                     <div class="success-box">
@@ -275,3 +280,9 @@ with tab2:
                 except Exception as e:
                     st.markdown(f'<div class="error-box">Error al procesar: {str(e)}</div>', unsafe_allow_html=True)
                     st.exception(e)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TAB 3 — MANTENCIÓN DE TABLAS
+# ═══════════════════════════════════════════════════════════════════════════════
+with tab3:
+    render_mantencion()
