@@ -277,7 +277,7 @@ with tab2:
         else:
             with st.spinner("Procesando liquidaciones..."):
                 try:
-                    output, n_filas, n_trabajadores, sin_empleado, log_bytes = procesar_liquidaciones(
+                    output, n_filas, n_trabajadores, sin_empleado, log_bytes, descuadre, log_descuadre_bytes = procesar_liquidaciones(
                         file_entrada, file_empleados2, file_empresas2, file_conceptos2
                     )
 
@@ -302,6 +302,19 @@ with tab2:
                             label="⬇ DESCARGAR LOG DE RUTs NO ENCONTRADOS",
                             data=log_bytes,
                             file_name="log_ruts_no_encontrados.xlsx",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        )
+
+                    if descuadre:
+                        st.markdown(f'''
+                        <div class="error-box">
+                            ⚠️ Se detectaron {len(descuadre)} registro(s) con descuadre en el líquido — no fueron grabados en el archivo de salida.
+                        </div>
+                        ''', unsafe_allow_html=True)
+                        st.download_button(
+                            label="⬇ DESCARGAR LOG DE DESCUADRE DE LÍQUIDO",
+                            data=log_descuadre_bytes,
+                            file_name="log_descuadre_liquido.xlsx",
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         )
 
