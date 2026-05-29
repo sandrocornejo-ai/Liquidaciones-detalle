@@ -262,13 +262,16 @@ def procesar_liquidaciones(file_entrada, file_params, file_afp, file_salud, file
                 dias_licencias = 0
 
             # Col 10 — Días trabajados
-            dias_trabajados = f"{dias_trab} x"
+            dias_trabajados = dias_trab
 
             # Col 13 — Total rebajas LLSS
             if concepto_nombre in {'impuesto', 'Impuesto mensual'}:
                 total_rebajas = val_afp + val_ces_empleado + val_trab_pesa_empl + min(val_isapre, tope_salud)
             else:
                 total_rebajas = 0
+
+            if monto <= 0:
+                continue
 
             filas_salida.append({
                 'Fecha de proceso':          mes_proc,
