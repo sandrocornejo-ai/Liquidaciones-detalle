@@ -168,9 +168,9 @@ def procesar_liquidaciones(file_entrada, file_empleados, file_empresas, file_con
         id_ccaf_val   = str(row.get('id_ccaf', ''))
 
         params_row = params_df.loc[mes_proc] if mes_proc in params_df.index else None
-        tope_afp   = safe_float(params_row['topeImp_pesos_afp']) if params_row is not None else 0
-        tope_ces   = safe_float(params_row['topeCes_pesos'])     if params_row is not None else 0
-        tope_salud = safe_float(params_row['topeSalud_pesos'])   if params_row is not None else 0
+        tope_afp   = safe_float(params_row['tope_imp_pesos_afp']) if params_row is not None else 0
+        tope_ces   = safe_float(params_row['tope_ces_pesos'])     if params_row is not None else 0
+        tope_salud = safe_float(params_row['tope_salud_pesos'])   if params_row is not None else 0
 
         total_hab_afecto = sum(safe_float(row.get(c, 0)) for c in haberes_cols if c in hab_afecto_nombres or c not in hab_exento_nombres)
         total_hab_exento = sum(safe_float(row.get(c, 0)) for c in haberes_cols if c in hab_exento_nombres)
@@ -241,15 +241,15 @@ def procesar_liquidaciones(file_entrada, file_empleados, file_empresas, file_con
             elif concepto_nombre == 'Cotizacion SALUD':
                 cot_jub = monto_concepto
             elif concepto_nombre == 'Aporte a CCAF':
-                cot_jub = lookup_param('aporte_Ccaf')
+                cot_jub = lookup_param('aporte_ccaf')
             elif concepto_nombre == 'Mutual':
                 cot_jub = safe_float(empresas_df.loc[str(nombre_emp), 'Cotización Mutual']) if str(nombre_emp) in empresas_df.index else ''
             elif concepto_nombre == 'Seguro Invalidez y Sobrevivencia':
                 cot_jub = lookup_param('sis')
             elif concepto_nombre == 'Aporte AFP Empleador':
-                cot_jub = lookup_param('Aporte AFP')
+                cot_jub = lookup_param('aporte_afp')
             elif concepto_nombre == 'Aporte FAPP Compensación Expectativa de Vida':
-                cot_jub = lookup_param('Seg Social Exp vida')
+                cot_jub = lookup_param('seg_social_exp_vida')
             else:
                 cot_jub = ''
 
